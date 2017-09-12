@@ -18,6 +18,8 @@ namespace ConsoleApp2
             Sudoko.SkrivUtAllaBoxar();
            // Sudoko.LösSudokun();
 
+            System.Console.WriteLine("Hello grupp E");
+
             Console.ReadLine();
         }
     }
