@@ -11,11 +11,14 @@ namespace TestSudoku
         static void Main(string[] args)
         {
             // Skickar in en sträng med alla nummer som ska fylla Sudokon
-            var Sudoku = new Sudoku("003020600900305001001806400008102900700000008006708200002609500800203009005010300");
+            var Sudoku = new Sudoku("384652090000800000792430000" +
+                                    "060304007173000264400106030" +
+                                    "000045128000003000050968473");
 
             // Skriver ut brädet i consolen 
            // Sudoko.LösSudokun();
            Sudoku.TypeBoardToConsole();
+            Sudoku.SolveSudoku();
 
             Console.ReadLine();
         }
