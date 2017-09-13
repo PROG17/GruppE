@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,12 +14,21 @@ namespace TestSudoku
         private string[] col = new string[9];
         private string[] box = new string[9];
         private string checknr;
+        private string numbers;
 
-        public Sudoku(string numbers)
+        public Sudoku(string Numbers)
         {
+            this.numbers = Numbers;
+        }
+
+        public void TypeBoardToConsole()
+        {
+
             int nextnumber = 0;
             int counter = 0;
             double rowlength = Math.Sqrt(board.Length);//Gör roten ur board för att få radlängd
+
+
 
             Console.WriteLine(" -------------------");//Grafisk erotik för Sudoku
             for (int i = 0; i < rowlength; i++)//Här gör vi loop för att få sifforna i rader, kolumner samt i boxar
@@ -85,7 +95,6 @@ namespace TestSudoku
                     Console.WriteLine(" -------------------");
                 }
                 else { }
-
             }
 
             //for (int k = 0; k < rowlength; k++) // Såhär gör man när man vill söka igenom en rad

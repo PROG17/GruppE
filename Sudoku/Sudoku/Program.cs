@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sudoku
+namespace TestSudoku
 {
     class Program
     {
@@ -14,9 +14,8 @@ namespace Sudoku
             var Sudoku = new Sudoku("003020600900305001001806400008102900700000008006708200002609500800203009005010300");
 
             // Skriver ut brädet i consolen 
-            Sudoku.SkrivUtSudokoBräde();
-            Sudoku.SkrivUtAllaBoxar();
            // Sudoko.LösSudokun();
+           Sudoku.TypeBoardToConsole();
 
             Console.ReadLine();
         }
