@@ -110,10 +110,7 @@ namespace TestSudoku
 
         public void SolveSudoku()
         {
-            Console.WriteLine(board[8, 1] + " plats 8,1");
-            Console.WriteLine(board[1, 0] + " plats 1,0");
 
-            Console.WriteLine((row[0][3]));
             Console.ReadLine();
             int colPlace = 0;
             int rowPlace = 0;
@@ -123,15 +120,15 @@ namespace TestSudoku
 
             while (sudokuIsFull == false)
             {
-                
+
 
                 for (int colNumber = 0; colNumber < 9; colNumber++)
                 {
-                    
+
                     for (int rowNumber = 0; rowNumber < 9; rowNumber++)
                     {
                         List<char> NumbersOneToNine = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-                        
+
                         if (rowPlace > 8)
                         {
                             rowPlace = 0;
@@ -161,7 +158,7 @@ namespace TestSudoku
                                 if (NumbersOneToNine.Contains(item))
                                 {
                                     NumbersOneToNine.Remove(item);
-                                    
+
                                 }
                             }
 
@@ -178,9 +175,8 @@ namespace TestSudoku
 
 
                             // Onödig foreach loop som skriver ut alla nummer som är möjliga på den cellen
-                            Console.WriteLine("nummer 1 - 9");
-                            Console.WriteLine(NumbersOneToNine.Count + " Antal nummer i lista \n");
-                            Console.WriteLine(board[rowPlace, colPlace] + " plats i sudpku ");
+
+
                             Console.WriteLine(colPlace + " Colplace \n" + rowPlace + " RowPlace");
                             foreach (var item in NumbersOneToNine)
                             {
@@ -192,18 +188,19 @@ namespace TestSudoku
                             if (NumbersOneToNine.Count == 1)
                             {
                                 board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
-                                char x = NumbersOneToNine[0];
-                                Console.WriteLine(row[rowPlace]);
-                                row[rowPlace].Replace('0', x);
-                                Console.WriteLine(row[rowPlace]);
+                                string hi = NumbersOneToNine[0].ToString();
+                                row[rowPlace] = row[rowPlace] + hi;
+                                col[colPlace] = col[colPlace] + hi;
+                                box[boxNummer] = box[boxNummer] + hi;
 
-                                Console.ReadLine();
+                                WriteComliteSudoku();
+                                
 
                                 Console.WriteLine("Added number " + NumbersOneToNine[0] + " in place " + board[rowPlace, colPlace]);
                             }
 
-                            WriteComliteSudoku();
-                            Console.ReadLine();
+                            //WriteComliteSudoku(rowPlace, colPlace);
+                            
 
                             colPlace++;
 
@@ -214,10 +211,10 @@ namespace TestSudoku
                         }
 
                     }
-                    
+
                 }
-               
-                Console.ReadLine();
+
+                
             }
         }
 
@@ -230,6 +227,7 @@ namespace TestSudoku
             {
                 for (int j = 0; j < 9; j++)
                 {
+
                     Console.Write(board[i, j] + " ");
 
                     if ((j + 1) % 3 == 0 && j != 9 - 1)//Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
@@ -251,9 +249,9 @@ namespace TestSudoku
             if (i < 3 && j < 3)
             {
                 boxNr = 0;              //Box 1 - Topleft
-                return  boxNr;
+                return boxNr;
             }
-            else if (i < 3 && j < 6 )
+            else if (i < 3 && j < 6)
             {
                 boxNr = 1;              //Box 2 - topmid
                 return boxNr;
@@ -275,7 +273,7 @@ namespace TestSudoku
                 return boxNr;
 
             }
-            else if (i < 6 &&  j > 5)//Box 6 - Midright
+            else if (i < 6 && j > 5)//Box 6 - Midright
             {
                 boxNr = 5;
                 return boxNr;
