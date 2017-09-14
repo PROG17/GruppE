@@ -110,16 +110,14 @@ namespace TestSudoku
 
         public void SolveSudoku()
         {
-            // Lista med nummer 1 - 9 
             Console.WriteLine(board[8, 1] + " plats 8,1");
             Console.WriteLine(board[1, 0] + " plats 1,0");
+
+            Console.WriteLine((row[0][3]));
             Console.ReadLine();
             int colPlace = 0;
             int rowPlace = 0;
 
-            int laps = 0;
-           // int rowNumber = 0;
-           // int colNumber = 0;
             int boxNumber = 0;
             bool sudokuIsFull = false;
 
@@ -163,17 +161,20 @@ namespace TestSudoku
                                 if (NumbersOneToNine.Contains(item))
                                 {
                                     NumbersOneToNine.Remove(item);
+                                    
                                 }
                             }
 
                             // Plockar bort alla nummer från listan som förekommer i nuvarande boxen
-                            //foreach (var item in box[2])
-                            //{
-                            //    if (NumbersOneToNine.Contains(item))
-                            //    {
-                            //        NumbersOneToNine.Remove(item);
-                            //    }
-                            //}
+                            int boxNummer = BoxCheckMethod(rowPlace, colPlace);
+                            foreach (var item in box[boxNummer])
+                            {
+
+                                if (NumbersOneToNine.Contains(item))
+                                {
+                                    NumbersOneToNine.Remove(item);
+                                }
+                            }
 
 
                             // Onödig foreach loop som skriver ut alla nummer som är möjliga på den cellen
@@ -191,7 +192,13 @@ namespace TestSudoku
                             if (NumbersOneToNine.Count == 1)
                             {
                                 board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
-                                
+                                char x = NumbersOneToNine[0];
+                                Console.WriteLine(row[rowPlace]);
+                                row[rowPlace].Replace('0', x);
+                                Console.WriteLine(row[rowPlace]);
+
+                                Console.ReadLine();
+
                                 Console.WriteLine("Added number " + NumbersOneToNine[0] + " in place " + board[rowPlace, colPlace]);
                             }
 
