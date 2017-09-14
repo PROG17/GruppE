@@ -18,6 +18,7 @@ namespace TestSudoku
         private string[] col = new string[9];              // string array för kolumnerna (vågrätt)
         private string[] box = new string[9];              //string array för box
         private string numbers;                            //string för Inputsiffrorna från MAIN.
+        private int solvedNumbers = 81;
 
 
         // Konstruktor
@@ -34,7 +35,7 @@ namespace TestSudoku
             double rowlength = Math.Sqrt(board.Length);    //Gör roten ur board för att få radlängd    (Kan egentligen bara vara = 9)
 
 
-            Console.WriteLine(" -------------------");//Grafisk erotik för Sudoku
+            Console.WriteLine(" ---------------------");//Grafisk erotik för Sudoku
             for (int i = 0; i < rowlength; i++)        //Här gör vi loop för att få sifforna i rader, kolumner samt i boxar
             {                                           //Denna forloopen går lodrätt.
                 for (int j = 0; j < rowlength; j++)     //Denna forloop går vågrätt. när den har gått 9 ggr byter den till nästa rad. (nedåt)
@@ -42,6 +43,11 @@ namespace TestSudoku
                     board[i, j] = numbers[nextnumber] - '0'; //Subtrahera med 48 i ascii-tabell (för att undgå string till int fel) 
                     row[i] += numbers[nextnumber];           //Sparar i en rad
                     col[j] += numbers[nextnumber];           //Sparar i en kolumn
+                    
+                    if (board[i,j] == 0)
+                    {
+                        solvedNumbers--;
+                    }
 
                     if (i < 3 && j < 3)//Box 1 - Topleft                    // Tilldelar siffran rätt box
                     {
@@ -93,7 +99,7 @@ namespace TestSudoku
                 Console.WriteLine();
                 if ((i + 1) % 3 == 0)//Grafisk erotik för Sudoku
                 {
-                    Console.WriteLine(" -------------------");
+                    Console.WriteLine(" ---------------------");
                 }
             }
         }
@@ -104,8 +110,7 @@ namespace TestSudoku
             Console.ReadLine();
             int colPlace = 0;
             int rowPlace = 0;
-
-            int boxNumber = 0;
+            string lol = "";
             bool sudokuIsFull = false;
 
             while (sudokuIsFull == false)
@@ -167,11 +172,21 @@ namespace TestSudoku
                             {
                                 board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
                                 string hi = NumbersOneToNine[0].ToString();
+                                lol = lol + board[rowPlace, colPlace].ToString();
                                 row[rowPlace] = row[rowPlace] + hi;
                                 col[colPlace] = col[colPlace] + hi;
                                 box[boxNummer] = box[boxNummer] + hi;
+                                solvedNumbers++;
 
-                                WriteComliteSudoku();
+                                //När alla fält har blivit lösta, skriv ut brädet
+                                if (solvedNumbers == 81)
+                                {
+                                    Console.Clear();
+                                    
+                                    WriteComliteSudoku();
+                                    sudokuIsFull = true;
+                                }
+                                
                             }
 
                             colPlace++;
@@ -180,6 +195,7 @@ namespace TestSudoku
                         {
                             colPlace++;
                         }
+                        
                     }
                 }
             }
@@ -188,26 +204,27 @@ namespace TestSudoku
         public void WriteComliteSudoku()
         {
             // Skriver ut det nya sudokubrädet
-            Console.WriteLine();
-            Console.WriteLine(" -------------------");
+            Console.WriteLine(" ---------------------");
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
 
-                    Console.Write(board[i, j] + " ");
+                    Console.Write(" " + board[i, j]);
 
                     if ((j + 1) % 3 == 0 && j != 9 - 1)//Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
                     {
-                        Console.Write("| ");
+                        Console.Write(" |");
                     }
                 }
                 Console.WriteLine();
                 if ((i + 1) % 3 == 0)//Grafisk erotik för Sudoku
                 {
-                    Console.WriteLine(" -------------------");
+                    Console.WriteLine(" ---------------------");
                 }
             }
+            Console.WriteLine();
+            
         }
 
         public int BoxCheckMethod(int i, int j)
