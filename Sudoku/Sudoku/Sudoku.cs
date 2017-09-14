@@ -13,37 +13,37 @@ namespace TestSudoku
     {
 
         // Fält
-        private int[,] board = new int[9, 9];
-        private string[] row = new string[9];
-        private string[] col = new string[9];
-        private string[] box = new string[9];
-        private string numbers;
+        private int[,] board = new int[9, 9];              //2-dimensionell array för brädet
+        private string[] row = new string[9];              //string array för raderna (lodrätt)
+        private string[] col = new string[9];              // string array för kolumnerna (vågrätt)
+        private string[] box = new string[9];              //string array för box
+        private string numbers;                            //string för Inputsiffrorna från MAIN.
 
 
         // Konstruktor
-        public Sudoku(string Numbers)
+        public Sudoku(string Numbers)                        //konstruktor för att sätta in siffror i main.
         {
             this.numbers = Numbers;
         }
 
         // Metod
-        public void TypeBoardToConsole()
+        public void TypeBoardToConsole()                      //Metod för att fylla alla arrayer med siffror på rätt plats
         {
 
-            int nextnumber = 0;
-            double rowlength = Math.Sqrt(board.Length);//Gör roten ur board för att få radlängd
+            int nextnumber = 0;                                   //nextnumber är en counter för index
+            double rowlength = Math.Sqrt(board.Length);    //Gör roten ur board för att få radlängd    (Kan egentligen bara vara = 9)
 
 
             Console.WriteLine(" -------------------");//Grafisk erotik för Sudoku
-            for (int i = 0; i < rowlength; i++)//Här gör vi loop för att få sifforna i rader, kolumner samt i boxar
-            {
-                for (int j = 0; j < rowlength; j++)
+            for (int i = 0; i < rowlength; i++)        //Här gör vi loop för att få sifforna i rader, kolumner samt i boxar
+            {                                           //Denna forloopen går lodrätt.
+                for (int j = 0; j < rowlength; j++)     //Denna forloop går vågrätt. när den har gått 9 ggr byter den till nästa rad. (nedåt)
                 {
                     board[i, j] = numbers[nextnumber] - '0'; //Subtrahera med 48 i ascii-tabell (för att undgå string till int fel) 
-                    row[i] = row[i] + numbers[nextnumber];//Sparar i en rad
-                    col[j] = col[j] + numbers[nextnumber];//Sparar i en kolumn
+                    row[i] += numbers[nextnumber];           //Sparar i en rad
+                    col[j] += numbers[nextnumber];           //Sparar i en kolumn
 
-                    if (i < 3 && j < 3)//Box 1 - Topleft
+                    if (i < 3 && j < 3)//Box 1 - Topleft                    // Tilldelar siffran rätt box
                     {
                         box[0] = box[0] + numbers[nextnumber];
                     }
@@ -96,8 +96,6 @@ namespace TestSudoku
                     Console.WriteLine(" -------------------");
                 }
             }
-
-
         }
 
         public void SolveSudoku()
@@ -112,7 +110,6 @@ namespace TestSudoku
 
             while (sudokuIsFull == false)
             {
-
 
                 for (int colNumber = 0; colNumber < 9; colNumber++)
                 {
@@ -165,17 +162,6 @@ namespace TestSudoku
                                 }
                             }
 
-
-
-
-
-
-                            foreach (var item in NumbersOneToNine)
-                            {
-                                Console.Write(item + " ");
-                            }
-                            Console.WriteLine();
-
                             // Om det endast finns ett nummer i listan ska det placeras på rätt plats i sudokun
                             if (NumbersOneToNine.Count == 1)
                             {
@@ -186,26 +172,16 @@ namespace TestSudoku
                                 box[boxNummer] = box[boxNummer] + hi;
 
                                 WriteComliteSudoku();
-
-                                ;
                             }
 
-
-
-
                             colPlace++;
-
                         }
                         else
                         {
                             colPlace++;
                         }
-
                     }
-
                 }
-
-
             }
         }
 
