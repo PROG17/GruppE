@@ -17,7 +17,6 @@ namespace TestSudoku
         private string[] row = new string[9];
         private string[] col = new string[9];
         private string[] box = new string[9];
-        private string checknr;
         private string numbers;
 
 
@@ -32,7 +31,6 @@ namespace TestSudoku
         {
 
             int nextnumber = 0;
-            int counter = 0;
             double rowlength = Math.Sqrt(board.Length);//Gör roten ur board för att få radlängd
 
 
@@ -42,7 +40,6 @@ namespace TestSudoku
                 for (int j = 0; j < rowlength; j++)
                 {
                     board[i, j] = numbers[nextnumber] - '0'; //Subtrahera med 48 i ascii-tabell (för att undgå string till int fel) 
-                    checknr = numbers[nextnumber].ToString();
                     row[i] = row[i] + numbers[nextnumber];//Sparar i en rad
                     col[j] = col[j] + numbers[nextnumber];//Sparar i en kolumn
 
@@ -89,7 +86,6 @@ namespace TestSudoku
                     {
                         Console.Write(" |");
                     }
-                    counter++;
                     nextnumber++;
 
                 }
@@ -101,10 +97,6 @@ namespace TestSudoku
                 }
             }
 
-            //for (int k = 0; k < rowlength; k++) // Såhär gör man när man vill söka igenom en rad
-            //{
-            //    Console.Write(board[k, 2]); //Detta är hela kolumn 3
-            //}
 
         }
 
@@ -174,10 +166,10 @@ namespace TestSudoku
                             }
 
 
-                            // Onödig foreach loop som skriver ut alla nummer som är möjliga på den cellen
 
 
-                            Console.WriteLine(colPlace + " Colplace \n" + rowPlace + " RowPlace");
+
+
                             foreach (var item in NumbersOneToNine)
                             {
                                 Console.Write(item + " ");
@@ -194,13 +186,12 @@ namespace TestSudoku
                                 box[boxNummer] = box[boxNummer] + hi;
 
                                 WriteComliteSudoku();
-                                
 
-                                Console.WriteLine("Added number " + NumbersOneToNine[0] + " in place " + board[rowPlace, colPlace]);
+                                ;
                             }
 
-                            //WriteComliteSudoku(rowPlace, colPlace);
-                            
+
+
 
                             colPlace++;
 
@@ -214,7 +205,7 @@ namespace TestSudoku
 
                 }
 
-                
+
             }
         }
 
