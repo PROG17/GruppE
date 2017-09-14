@@ -147,7 +147,7 @@ namespace TestSudoku
                         else if (board[rowPlace, colPlace] == 0)
                         {
                             // Plockar bort alla nummer från listan som förekommer i nuvarande raden
-                            foreach (var item in row[colPlace])
+                            foreach (var item in row[rowPlace])
                             {
                                 if (NumbersOneToNine.Contains(item))
                                 {
@@ -157,7 +157,7 @@ namespace TestSudoku
 
                             // Plockar bort alla nummer från listan som förekommer i nuvarande Kolumnen
 
-                            foreach (var item in col[rowPlace])
+                            foreach (var item in col[colPlace])
                             {
                                 if (NumbersOneToNine.Contains(item))
                                 {
@@ -190,13 +190,14 @@ namespace TestSudoku
                             if (NumbersOneToNine.Count == 1)
                             {
                                 board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
+                                
                                 Console.WriteLine("Added number " + NumbersOneToNine[0] + " in place " + board[rowPlace, colPlace]);
                             }
 
                             WriteComliteSudoku();
                             Console.ReadLine();
 
-                             colPlace++;
+                            colPlace++;
 
                         }
                         else
