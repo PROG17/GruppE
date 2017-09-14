@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -234,6 +235,59 @@ namespace TestSudoku
                     Console.WriteLine(" -------------------");
                 }
             }
+        }
+
+        public int BoxCheckMethod(int i, int j)
+        {
+            int boxNr;
+            if (i < 3 && j < 3)
+            {
+                boxNr = 0;              //Box 1 - Topleft
+                return  boxNr;
+            }
+            else if (i < 3 && j < 6 )
+            {
+                boxNr = 1;              //Box 2 - topmid
+                return boxNr;
+            }
+            else if (i < 3 && j < 9)//Box 3 - Topright
+            {
+                boxNr = 2;
+                return boxNr;
+            }
+            else if (i < 6 && j < 3)//Box 4 - Midleft
+            {
+                boxNr = 3;
+                return boxNr;
+
+            }
+            else if (i < 6 && j < 6)//Box 5 - Midmid
+            {
+                boxNr = 4;
+                return boxNr;
+
+            }
+            else if (i < 6 &&  j > 5)//Box 6 - Midright
+            {
+                boxNr = 5;
+                return boxNr;
+            }
+            else if (i < 9 && j < 3)//Box 7 - Botleft
+            {
+                boxNr = 6;
+                return boxNr;
+            }
+            else if (i < 9 && j < 6)//Box 8 - Botmid
+            {
+                boxNr = 7;
+                return boxNr;
+            }
+            else //Box 9 - Botright
+            {
+                boxNr = 8;
+                return boxNr;
+            }
+
         }
     }
 }
