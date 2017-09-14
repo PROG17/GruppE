@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,9 +86,8 @@ namespace TestSudoku
 
                     if ((j + 1) % 3 == 0 && j != rowlength - 1)//Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
                     {
-                        Console.Write("|");
+                        Console.Write(" |");
                     }
-                    else { }
                     counter++;
                     nextnumber++;
 
@@ -98,7 +98,6 @@ namespace TestSudoku
                 {
                     Console.WriteLine(" -------------------");
                 }
-                else { }
             }
 
             //for (int k = 0; k < rowlength; k++) // Såhär gör man när man vill söka igenom en rad
@@ -111,61 +110,129 @@ namespace TestSudoku
         public void SolveSudoku()
         {
             // Lista med nummer 1 - 9 
-            List<char> NumbersOneToNine = new List<char>(){'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
-            // Plockar bort alla nummer från listan som förekommer i nuvarande raden
-            foreach (var item in row[6])
-            {
-                if (NumbersOneToNine.Contains(item))
-                {
-                    NumbersOneToNine.Remove(item);
-                }
-            }
-            
-            // Plockar bort alla nummer från listan som förekommer i nuvarande Kolumnen
-            foreach (var item in col[1])
-            {
-                if (NumbersOneToNine.Contains(item))
-                {
-                    NumbersOneToNine.Remove(item);
-                }
-            }
-
-            // Plockar bort alla nummer från listan som förekommer i nuvarande boxen
-            foreach (var item in box[6])
-            {
-                if (NumbersOneToNine.Contains(item))
-                {
-                    NumbersOneToNine.Remove(item);
-                }
-            }
-
-
-            // Onödig foreach loop som skriver ut alla nummer som är möjliga på den cellen
-            Console.WriteLine("nummer 1 - 9");
-            foreach (var item in NumbersOneToNine)
-            {
-
-                Console.Write(item);
-            }
-
-            // Om det endast finns ett nummer i listan ska det placeras på rätt plats i sudokun
-            if (NumbersOneToNine.Count == 1)
-            {
-                board[6, 1] = NumbersOneToNine[0] - '0';
-            }
+            Console.WriteLine(board[8, 1] + " plats 8,1");
+            Console.WriteLine(board[1, 0] + " plats 1,0");
             Console.ReadLine();
+            int colPlace = 0;
+            int rowPlace = 0;
+
+            int laps = 0;
+           // int rowNumber = 0;
+           // int colNumber = 0;
+            int boxNumber = 0;
+            bool sudokuIsFull = false;
+
+            while (sudokuIsFull == false)
+            {
+                
+
+                for (int colNumber = 0; colNumber < 9; colNumber++)
+                {
+                    
+                    for (int rowNumber = 0; rowNumber < 9; rowNumber++)
+                    {
+                        List<char> NumbersOneToNine = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+                        
+                        if (rowPlace > 8)
+                        {
+                            rowPlace = 0;
+                        }
+
+                        else if (colPlace > 8)
+                        {
+                            rowPlace++;
+
+                            colPlace = 0;
+                        }
+                        else if (board[rowPlace, colPlace] == 0)
+                        {
+                            // Plockar bort alla nummer från listan som förekommer i nuvarande raden
+                            foreach (var item in row[colPlace])
+                            {
+                                if (NumbersOneToNine.Contains(item))
+                                {
+                                    NumbersOneToNine.Remove(item);
+                                }
+                            }
+
+                            // Plockar bort alla nummer från listan som förekommer i nuvarande Kolumnen
+
+                            foreach (var item in col[rowPlace])
+                            {
+                                if (NumbersOneToNine.Contains(item))
+                                {
+                                    NumbersOneToNine.Remove(item);
+                                }
+                            }
+
+                            // Plockar bort alla nummer från listan som förekommer i nuvarande boxen
+                            //foreach (var item in box[2])
+                            //{
+                            //    if (NumbersOneToNine.Contains(item))
+                            //    {
+                            //        NumbersOneToNine.Remove(item);
+                            //    }
+                            //}
 
 
+                            // Onödig foreach loop som skriver ut alla nummer som är möjliga på den cellen
+                            Console.WriteLine("nummer 1 - 9");
+                            Console.WriteLine(NumbersOneToNine.Count + " Antal nummer i lista \n");
+                            Console.WriteLine(board[rowPlace, colPlace] + " plats i sudpku ");
+                            Console.WriteLine(colPlace + " Colplace \n" + rowPlace + " RowPlace");
+                            foreach (var item in NumbersOneToNine)
+                            {
+                                Console.Write(item + " ");
+                            }
+                            Console.WriteLine();
+
+                            // Om det endast finns ett nummer i listan ska det placeras på rätt plats i sudokun
+                            if (NumbersOneToNine.Count == 1)
+                            {
+                                board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
+                                Console.WriteLine("Added number " + NumbersOneToNine[0] + " in place " + board[rowPlace, colPlace]);
+                            }
+
+                            WriteComliteSudoku();
+                            Console.ReadLine();
+
+                             colPlace++;
+
+                        }
+                        else
+                        {
+                            colPlace++;
+                        }
+
+                    }
+                    
+                }
+               
+                Console.ReadLine();
+            }
+        }
+
+        public void WriteComliteSudoku()
+        {
             // Skriver ut det nya sudokubrädet
             Console.WriteLine();
+            Console.WriteLine(" -------------------");
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    Console.Write(board[i,j]+ " ");
+                    Console.Write(board[i, j] + " ");
+
+                    if ((j + 1) % 3 == 0 && j != 9 - 1)//Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
+                    {
+                        Console.Write("| ");
+                    }
                 }
                 Console.WriteLine();
+                if ((i + 1) % 3 == 0)//Grafisk erotik för Sudoku
+                {
+                    Console.WriteLine(" -------------------");
+                }
             }
         }
     }
