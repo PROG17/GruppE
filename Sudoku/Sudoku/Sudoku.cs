@@ -18,7 +18,7 @@ namespace TestSudoku
         private string[] col = new string[9];              // string array för kolumnerna (vågrätt)
         private string[] box = new string[9];              //string array för box
         private string numbers;                            //string för Inputsiffrorna från MAIN.
-        private int solvedNumbers = 81;
+        //  private int solvedNumbers = 81;
 
 
         // Konstruktor
@@ -28,26 +28,26 @@ namespace TestSudoku
         }
 
         // Metod
-        public void TypeBoardToConsole()                      //Metod för att fylla alla arrayer med siffror på rätt plats
+        public void TypeBoardToConsole()                    //Metod för att fylla alla arrayer med siffror på rätt plats
         {
 
-            int nextnumber = 0;                                   //nextnumber är en counter för index
-            double rowlength = Math.Sqrt(board.Length);    //Gör roten ur board för att få radlängd    (Kan egentligen bara vara = 9)
+            int nextnumber = 0;                             //nextnumber är en counter för index
+            double rowlength = Math.Sqrt(board.Length);     //Gör roten ur board för att få radlängd    (Kan egentligen bara vara = 9)
 
 
-            Console.WriteLine(" ---------------------");//Grafisk erotik för Sudoku
-            for (int i = 0; i < rowlength; i++)        //Här gör vi loop för att få sifforna i rader, kolumner samt i boxar
-            {                                           //Denna forloopen går lodrätt.
-                for (int j = 0; j < rowlength; j++)     //Denna forloop går vågrätt. när den har gått 9 ggr byter den till nästa rad. (nedåt)
+            Console.WriteLine(" ---------------------");    //Grafisk erotik för Sudoku
+            for (int i = 0; i < rowlength; i++)             //Här gör vi loop för att få sifforna i rader, kolumner samt i boxar
+            {                                               //Denna forloopen går lodrätt.
+                for (int j = 0; j < rowlength; j++)         //Denna forloop går vågrätt. när den har gått 9 ggr byter den till nästa rad. (nedåt)
                 {
                     board[i, j] = numbers[nextnumber] - '0'; //Subtrahera med 48 i ascii-tabell (för att undgå string till int fel) 
                     row[i] += numbers[nextnumber];           //Sparar i en rad
                     col[j] += numbers[nextnumber];           //Sparar i en kolumn
                     
-                    if (board[i,j] == 0)
-                    {
-                        solvedNumbers--;
-                    }
+                    //if (board[i,j] == 0)
+                    //{
+                    //    solvedNumbers--;
+                    //}
 
                     if (i < 3 && j < 3)//Box 1 - Topleft                    // Tilldelar siffran rätt box
                     {
@@ -88,7 +88,7 @@ namespace TestSudoku
 
                     Console.Write(" " + board[i, j]);
 
-                    if ((j + 1) % 3 == 0 && j != rowlength - 1)//Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
+                    if ((j + 1) % 3 == 0 && j != rowlength - 1) //Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
                     {
                         Console.Write(" |");
                     }
@@ -121,6 +121,7 @@ namespace TestSudoku
 
                     for (int rowNumber = 0; rowNumber < 9; rowNumber++)
                     {
+
                         List<char> NumbersOneToNine = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
                         if (rowPlace > 8)
@@ -172,20 +173,30 @@ namespace TestSudoku
                             {
                                 board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
                                 string hi = NumbersOneToNine[0].ToString();
-                                lol = lol + board[rowPlace, colPlace].ToString();
+
+                             // lol = lol + board[rowPlace, colPlace];
+
                                 row[rowPlace] = row[rowPlace] + hi;
                                 col[colPlace] = col[colPlace] + hi;
                                 box[boxNummer] = box[boxNummer] + hi;
-                                solvedNumbers++;
+
+                                // solvedNumbers++;
+
+                                int totlaSum = 0;
+                                foreach (var item in board)
+                                {
+                                    totlaSum = totlaSum + item;
+                                }
+                                if (totlaSum == 405) { sudokuIsFull = true; }
+ 
 
                                 //När alla fält har blivit lösta, skriv ut brädet
-                                if (solvedNumbers == 81)
-                                {
-                                    Console.Clear();
-                                    
-                                    WriteComliteSudoku();
-                                    sudokuIsFull = true;
-                                }
+                                //if (solvedNumbers == 81)
+                                //{
+                                //    Console.Clear();
+                                //    WriteComliteSudoku();
+                                //    sudokuIsFull = true;
+                                //}
                                 
                             }
 
@@ -195,14 +206,18 @@ namespace TestSudoku
                         {
                             colPlace++;
                         }
-                        
                     }
                 }
             }
+            WriteCompleteSudoku();
         }
 
-        public void WriteComliteSudoku()
+        public void WriteCompleteSudoku()
         {
+
+            Console.Clear();
+            
+            
             // Skriver ut det nya sudokubrädet
             Console.WriteLine(" ---------------------");
             for (int i = 0; i < 9; i++)
