@@ -25,6 +25,7 @@ namespace TestSudoku
         public Sudoku(string Numbers)                        //konstruktor för att sätta in siffror i main.
         {
             this.numbers = Numbers;
+
         }
 
         // Metod
@@ -43,7 +44,7 @@ namespace TestSudoku
                     board[i, j] = numbers[nextnumber] - '0'; //Subtrahera med 48 i ascii-tabell (för att undgå string till int fel) 
                     row[i] += numbers[nextnumber];           //Sparar i en rad
                     col[j] += numbers[nextnumber];           //Sparar i en kolumn
-                    
+
                     //if (board[i,j] == 0)
                     //{
                     //    solvedNumbers--;
@@ -174,7 +175,7 @@ namespace TestSudoku
                                 board[rowPlace, colPlace] = NumbersOneToNine[0] - '0';
                                 string hi = NumbersOneToNine[0].ToString();
 
-                             // lol = lol + board[rowPlace, colPlace];
+                                // lol = lol + board[rowPlace, colPlace];
 
                                 row[rowPlace] = row[rowPlace] + hi;
                                 col[colPlace] = col[colPlace] + hi;
@@ -188,7 +189,7 @@ namespace TestSudoku
                                     totlaSum = totlaSum + item;
                                 }
                                 if (totlaSum == 405) { sudokuIsFull = true; }
- 
+
 
                                 //När alla fält har blivit lösta, skriv ut brädet
                                 //if (solvedNumbers == 81)
@@ -197,7 +198,7 @@ namespace TestSudoku
                                 //    WriteComliteSudoku();
                                 //    sudokuIsFull = true;
                                 //}
-                                
+
                             }
 
                             colPlace++;
@@ -209,38 +210,12 @@ namespace TestSudoku
                     }
                 }
             }
-            WriteCompleteSudoku();
+           
+            LineUp(board);              //Skickar alla siffror till LineUp-Metoden
+            TypeBoardToConsole();       //Återanvänder samma metod som i början.
+
         }
 
-        public void WriteCompleteSudoku()
-        {
-
-            Console.Clear();
-            
-            
-            // Skriver ut det nya sudokubrädet
-            Console.WriteLine(" ---------------------");
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-
-                    Console.Write(" " + board[i, j]);
-
-                    if ((j + 1) % 3 == 0 && j != 9 - 1)//Grafisk erotik för Sudoku - sker efter varje 3:e siffra förutom 9
-                    {
-                        Console.Write(" |");
-                    }
-                }
-                Console.WriteLine();
-                if ((i + 1) % 3 == 0)//Grafisk erotik för Sudoku
-                {
-                    Console.WriteLine(" ---------------------");
-                }
-            }
-            Console.WriteLine();
-            
-        }
 
         public int BoxCheckMethod(int i, int j)
         {
@@ -293,6 +268,31 @@ namespace TestSudoku
                 return boxNr;
             }
 
+        }           
+
+
+        public void LineUp(int[,] totNr)            //Ändrar "inputsiffrorna" så vi kan återanvända metoden där vi skriver ut brädet.
+        {
+            Console.Clear();
+            this.numbers = "";
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    string x = totNr[i, j].ToString();
+                    
+                    this.numbers += x;
+
+                }
+            }
+
+            //return this.numbers;
         }
+
+
+
     }
+
+
+
 }
