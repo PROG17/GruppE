@@ -13,7 +13,7 @@ namespace newSudoku
         static void Main(string[] args)
         {
 
-            var Sudoku = new Sudoku("010008932000010050038524100100000379000701000743000008001849720090060000867300090");
+            var Sudoku = new Sudoku("037060000205000800006908000000600024001503600650009000000302700009000402000050360");
             Sudoku.TypeBoard();
             Sudoku.SolveBoard();
 

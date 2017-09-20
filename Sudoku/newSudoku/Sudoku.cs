@@ -123,7 +123,7 @@ namespace newSudoku
                             // Om den char som returneras är ett nummer kommer numberOneToNine rensas och 
                             // endast lägga till det värdet
                             List<string> god = PosibleNumberToFillSudoku(possible, rowIndex, colIndex);
-                            
+
                             //Console.ReadLine();
                             if (god.Count == 1)
                             {
@@ -159,7 +159,10 @@ namespace newSudoku
                 }
                 if (sudokuToHard == true)   // Om det inte läggs till något nytt nummer på ett varv skrivs brädet ut 
                 {
-                    GuessNumber();
+                    Console.WriteLine();
+                    TypeBoard();
+                    Console.ReadLine();
+                    // GuessNumber();
                 }
             }
         }
@@ -204,7 +207,7 @@ namespace newSudoku
             return NumberOneToNine;
         }
 
-        public List<string> PosibleNumberToFillSudoku(List<char> numbersList, int positionCol, int positionRow)
+        public List<string> PosibleNumberToFillSudoku(List<char> numbersList, int positionRow, int positionCol)
         {
             // Temporära index för Col och Row
             int tempRowIndex = 0;
