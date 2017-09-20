@@ -63,15 +63,15 @@ namespace newSudoku
             boxNumber = 0;  // Blir index för att få rätt boxar
 
             // For-looparna går igenom sudokuNummer och fyller boxar, rader och kolumner
-            for (int colIndex = 0; colIndex < 9; colIndex++)
+            for (int rowIndex = 0; rowIndex < 9; rowIndex++)
             {
-                for (int rowIndex = 0; rowIndex < 9; rowIndex++)
+                for (int colIndex = 0; colIndex < 9; colIndex++)
                 {
-                    boxNumber = SetBoxNumber(colIndex, rowIndex);
+                    boxNumber = SetBoxNumber(rowIndex, colIndex);
 
-                    bord[colIndex, rowIndex] = sudokuNumbers[addNumber];
-                    row[colIndex] += sudokuNumbers[addNumber];
-                    col[rowIndex] += sudokuNumbers[addNumber];
+                    bord[rowIndex, colIndex] = sudokuNumbers[addNumber];
+                    row[rowIndex] += sudokuNumbers[addNumber];
+                    col[colIndex] += sudokuNumbers[addNumber];
                     box[boxNumber] += sudokuNumbers[addNumber];
 
                     addNumber++;
@@ -80,16 +80,16 @@ namespace newSudoku
         }
 
         // Metod - Tar in två parametrar som tar reda på vart i sudokun vi är. Returnerar sedan korrekt boxnummer
-        public int SetBoxNumber(int colIndex, int rowIndex)
+        public int SetBoxNumber(int rowIndex, int colIndex)
         {
-            if (colIndex < 3 && rowIndex < 3) return 0;
-            if (colIndex < 3 && rowIndex < 6) return 1;
-            if (colIndex < 3 && rowIndex > 5) return 2;
-            if (colIndex < 6 && rowIndex < 3) return 3;
-            if (colIndex < 6 && rowIndex < 6) return 4;
-            if (colIndex < 6 && rowIndex > 5) return 5;
-            if (colIndex > 5 && rowIndex < 3) return 6;
-            if (colIndex > 5 && rowIndex < 6) return 7;
+            if (rowIndex < 3 && colIndex < 3) return 0;
+            if (rowIndex < 3 && colIndex < 6) return 1;
+            if (rowIndex < 3 && colIndex > 5) return 2;
+            if (rowIndex < 6 && colIndex < 3) return 3;
+            if (rowIndex < 6 && colIndex < 6) return 4;
+            if (rowIndex < 6 && colIndex > 5) return 5;
+            if (rowIndex > 5 && colIndex < 3) return 6;
+            if (rowIndex > 5 && colIndex < 6) return 7;
             return 8;
         }
 
@@ -107,47 +107,36 @@ namespace newSudoku
 
 
                 // Looparna letar efter tomma platser i sudokun - Platser som innehåller '0'
-                for (int colIndex = 0; colIndex < 9; colIndex++)
+                for (int rowIndex = 0; rowIndex < 9; rowIndex++)
                 {
-                    for (int rowIndex = 0; rowIndex < 9; rowIndex++)
+                    for (int colIndex = 0; colIndex < 9; colIndex++)
                     {
-                        List<char> NumberOneToNine = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9' };  // Används för att sätta rätt nummer på plats
-                        boxNumber = SetBoxNumber(colIndex, rowIndex);   // Hämtar rätt boxnumer från metod
-                        if (bord[colIndex, rowIndex] == '0')    // Kollar om platsen är tom
+                        
+                        if (bord[rowIndex, colIndex] == '0')    // Kollar om platsen är tom
                         {
-                            foreach (var item in row[colIndex]) // Plockar bort alla nummer som finns i rätt rad
-                            {
-                                NumberOneToNine.Remove(item);
-                            }
-
-                            foreach (var item in col[rowIndex]) // Plockar bort alla nummer som finns i rätt kolumn
-                            {
-                                NumberOneToNine.Remove(item);
-                            }
-
-                            foreach (var item in box[boxNumber])// Plockar bort alla nummer som finns i rätt box
-                            {
-                                NumberOneToNine.Remove(item);
-                            }
+                            boxNumber = SetBoxNumber(rowIndex, colIndex);   // Hämtar rätt boxnumer från metod
+                            List<char> possible = GetPossibleNumber(rowIndex, colIndex);
 
                             //+++++++++++++++++++++++++++++++++
 
                             // Skickar in alla möjliga nummer och positionen i sudokun
                             // Om den char som returneras är ett nummer kommer numberOneToNine rensas och 
                             // endast lägga till det värdet
-
-                            char god = PosibleNumberToFillSudoku(NumberOneToNine, rowIndex, colIndex);
-                            if (god != ' ')
-                            {
-                                NumberOneToNine.Clear();
-                                NumberOneToNine.Add(god);
-                            }
+                            List<string> god = PosibleNumberToFillSudoku(possible, rowIndex, colIndex);
                             
-                            if (NumberOneToNine.Count == 1) // Kollar om det bara finns ett nummer kvar     
+                            //Console.ReadLine();
+                            if (god.Count == 1)
+                            {
+                                char nr = Convert.ToChar(god[0]);
+                                possible.Clear();
+                                possible.Add(nr);
+                            }
+
+                            if (possible.Count == 1) // Kollar om det bara finns ett nummer kvar     
                             {
                                 sudokuToHard = false;
 
-                                string nr = Convert.ToString(NumberOneToNine[0]);               // Gör om sista siffran till string
+                                string nr = Convert.ToString(possible[0]);               // Gör om sista siffran till string
                                 sudokuNumbers = sudokuNumbers.Remove(laps, 1).Insert(laps, nr); // Plockar bort ett nummer som är fel och lägger till rätt nummer
 
                                 FillBoxRowCol();    // Fyller Box, rad och kloumn med nya värden
@@ -170,16 +159,15 @@ namespace newSudoku
                 }
                 if (sudokuToHard == true)   // Om det inte läggs till något nytt nummer på ett varv skrivs brädet ut 
                 {
-                   GuessNumber();
+                    GuessNumber();
                 }
             }
         }
+        
 
-
-        // TEST FÖR UPPGIFT 2
+        // Metod som gissar tal tills sudokun är full
         private void GuessNumber()
         {
-
             string guesssNumbers = sudokuNumbers;
             var guess = new Sudoku(guesssNumbers);
             for (int rowIndex = 0; rowIndex < 9; rowIndex++)
@@ -188,65 +176,86 @@ namespace newSudoku
                 {
                     if (bord[rowIndex, colIndex] == '0')
                     {
-                        
+                        List<char> nr = GetPossibleNumber(rowIndex, colIndex);
                     }
                 }
             }
-            guess.SolveBoard();
+           // guess.SolveBoard();
 
         }
 
-        public char PosibleNumberToFillSudoku(List<char> numbersList, int positionCol, int positionRow)
+        public List<char> GetPossibleNumber(int rowIndex, int colIndex)
+        {
+            List<char> NumberOneToNine = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9' };  // Används för att sätta rätt nummer på plats
+            foreach (var item in row[rowIndex]) // Plockar bort alla nummer som finns i rätt rad
+            {
+                NumberOneToNine.Remove(item);
+            }
+
+            foreach (var item in col[colIndex]) // Plockar bort alla nummer som finns i rätt kolumn
+            {
+                NumberOneToNine.Remove(item);
+            }
+
+            foreach (var item in box[boxNumber])// Plockar bort alla nummer som finns i rätt box
+            {
+                NumberOneToNine.Remove(item);
+            }
+            return NumberOneToNine;
+        }
+
+        public List<string> PosibleNumberToFillSudoku(List<char> numbersList, int positionCol, int positionRow)
         {
             // Temporära index för Col och Row
-            int tempColIndex = 0;
             int tempRowIndex = 0;
+            int tempColIndex = 0;
+            
 
             // Sätter Col och Row till rätt startvärden utifrån vilken box de tillhör
             if (boxNumber == 0)
             {
-                tempColIndex = 0;
                 tempRowIndex = 0;
+                tempColIndex = 0;
             }
             if (boxNumber == 1)
             {
-                tempColIndex = 3;
                 tempRowIndex = 0;
+                tempColIndex = 3;
             }
             if (boxNumber == 2)
             {
-                tempColIndex = 6;
                 tempRowIndex = 0;
+                tempColIndex = 6;
             }
             if (boxNumber == 3)
             {
-                tempColIndex = 0;
                 tempRowIndex = 3;
+                tempColIndex = 0;
             }
             if (boxNumber == 4)
             {
-                tempColIndex = 3;
                 tempRowIndex = 3;
+                tempColIndex = 3;
             }
             if (boxNumber == 5)
             {
-                tempColIndex = 6;
                 tempRowIndex = 3;
+                tempColIndex = 6;
             }
             if (boxNumber == 6)
             {
-                tempColIndex = 0;
                 tempRowIndex = 6;
+                tempColIndex = 0;
             }
             if (boxNumber == 7)
             {
-                tempColIndex = 3;
                 tempRowIndex = 6;
+                tempColIndex = 3;
             }
             if (boxNumber == 8)
             {
-                tempColIndex = 6;
                 tempRowIndex = 6;
+                tempColIndex = 6;
             }
 
 
@@ -296,16 +305,7 @@ namespace newSudoku
             // Om JA, returnerar det värdet som sedan läggs till i sudoku brädet
             // Om Nej, returneras en tom char
             
-            if (realNumber.Count == 1)
-            {
-                char returNumber = char.Parse(realNumber[0]);
-
-                return returNumber;
-            }
-            else
-            {
-                return ' ';
-            }
+            return realNumber;
         }
     }
 }
