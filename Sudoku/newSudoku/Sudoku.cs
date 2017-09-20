@@ -3,7 +3,9 @@ using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Contexts;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Security.Policy;
 
 namespace newSudoku
@@ -12,14 +14,18 @@ namespace newSudoku
     {
         // Fält
         private string sudokuNumbers;           // Nummer i sudokun
-        char[,] bord = new char[9, 9];           // Skapar sudoku brädet
+        
+        char[,] bord = new char[9, 9];          // Skapar sudoku brädet
         private string[] row = new string[9];   // Rad arry
         private string[] col = new string[9];   // Kolumn array
         private string[] box = new string[9];   // Box arry
 
-        private int addNumber;  // Int som används i FillBoxRowCol metoden för att få rätt rad och col
-        private int boxNumber;  // Anvds i metod för att få ut rät box nr
-        private bool guessNr;
+        private int addNumber;          // Int som används i FillBoxRowCol metoden för att få rätt rad och col
+        private int boxNumber;          // Anvds i metod för att få ut rät box nr
+        private bool sudkouIsFull;
+        private bool sudokuToHard;      // Kollar om sudokun går att lösa med uppgift 1s lösning
+
+        int laps = 0;                   // Räknar varv som används för att få ut rätt plats i sudokuNummer strängen
 
         // Construktor - Tar in spelbrädet från main metod
         public Sudoku(string numberString)
@@ -30,8 +36,6 @@ namespace newSudoku
         // Metoder - Skriver ut brädet i consolen
         public void TypeBoard()
         {
-            FillBoxRowCol();    // Fyller alla rader, kolumner och boxar
-
             // For-looparna skriver ut bärdet och lite skiljetecken på avsedda plattser 
             for (int colIndex = 0; colIndex < 9; colIndex++)
             {
@@ -52,7 +56,7 @@ namespace newSudoku
         }
 
         // Metod - Fyller boxar, rader och kloumner
-        public void FillBoxRowCol()
+        public void FillBoxRowCol(string sudokuNr)
         {
             // Nollställer alla arrys för att undivika att de kopieras istället för att bara lägga till det nya värdet
             Array.Clear(row, 0, row.Length);
@@ -69,10 +73,10 @@ namespace newSudoku
                 {
                     boxNumber = SetBoxNumber(rowIndex, colIndex);
 
-                    bord[rowIndex, colIndex] = sudokuNumbers[addNumber];
-                    row[rowIndex] += sudokuNumbers[addNumber];
-                    col[colIndex] += sudokuNumbers[addNumber];
-                    box[boxNumber] += sudokuNumbers[addNumber];
+                    bord[rowIndex, colIndex] = sudokuNr[addNumber];
+                    row[rowIndex] += sudokuNr[addNumber];
+                    col[colIndex] += sudokuNr[addNumber];
+                    box[boxNumber] += sudokuNr[addNumber];
 
                     addNumber++;
                 }
@@ -96,97 +100,106 @@ namespace newSudoku
         // Metod - Löser sudoku brädet
         public void SolveBoard()
         {
-            bool sudkouIsFull = false;
-
-
-            while (sudkouIsFull == false)        // Körs tills sudokun är full
+            FillBoxRowCol(sudokuNumbers);
+          //  TypeBoard();
+            
+            while (sudokuToHard == false) // Körs tills sudokun är full
             {
-                int laps = 0;   // Räknar varv som används för att få ut rätt plats i sudokuNummer strängen
-                bool sudokuToHard = true; // Kollar om sudokun går att lösa med uppgift 1s lösning
-
-
-
-                // Looparna letar efter tomma platser i sudokun - Platser som innehåller '0'
+                laps = 0; // Räknar varv som används för att få ut rätt plats i sudokuNummer strängen
+                sudokuToHard = true;
                 for (int rowIndex = 0; rowIndex < 9; rowIndex++)
                 {
                     for (int colIndex = 0; colIndex < 9; colIndex++)
                     {
-                        
-                        if (bord[rowIndex, colIndex] == '0')    // Kollar om platsen är tom
+                        if (bord[rowIndex, colIndex] == '0')
                         {
-                            boxNumber = SetBoxNumber(rowIndex, colIndex);   // Hämtar rätt boxnumer från metod
-                            List<char> possible = GetPossibleNumber(rowIndex, colIndex);
+                            boxNumber = SetBoxNumber(rowIndex, colIndex);
+                            List<char> possibleList = GetPossibleNumber(rowIndex, colIndex);
+                            placeInSudoku(possibleList);
 
-                            //+++++++++++++++++++++++++++++++++
-
-                            // Skickar in alla möjliga nummer och positionen i sudokun
-                            // Om den char som returneras är ett nummer kommer numberOneToNine rensas och 
-                            // endast lägga till det värdet
-                            List<string> god = PosibleNumberToFillSudoku(possible, rowIndex, colIndex);
-
-                            //Console.ReadLine();
-                            if (god.Count == 1)
-                            {
-                                char nr = Convert.ToChar(god[0]);
-                                possible.Clear();
-                                possible.Add(nr);
-                            }
-
-                            if (possible.Count == 1) // Kollar om det bara finns ett nummer kvar     
-                            {
-                                sudokuToHard = false;
-
-                                string nr = Convert.ToString(possible[0]);               // Gör om sista siffran till string
-                                sudokuNumbers = sudokuNumbers.Remove(laps, 1).Insert(laps, nr); // Plockar bort ett nummer som är fel och lägger till rätt nummer
-
-                                FillBoxRowCol();    // Fyller Box, rad och kloumn med nya värden
-                                if (!sudokuNumbers.Contains("0"))   // Är sudokun full finns inga tomma platser kvar, Då löses sudokun
-                                {
-                                    Console.Write("\nPress ENTER to solve sudoku: ");
-                                    Console.ReadLine();
-                                    Console.Clear();
-                                    TypeBoard();    // Skriver ut det färdiga bärdet
-                                    sudkouIsFull = true;
-                                }
-                                
-                            }
-                            
                         }
-                        laps++; // Ökar antalet varav
-                        
+                        laps++;
                     }
-                    
-                }
-                if (sudokuToHard == true)   // Om det inte läggs till något nytt nummer på ett varv skrivs brädet ut 
-                {
-                    Console.WriteLine();
-                    TypeBoard();
-                    Console.ReadLine();
-                    // GuessNumber();
                 }
             }
+            if (sudokuToHard == true)
+            {
+                GuessNumber();
+            }
+            
         }
-        
 
-        // Metod som gissar tal tills sudokun är full
+        // Metod - Läggertill nummer i cell
+        public void placeInSudoku(List<char> possible)
+        {
+            if (possible.Count == 1) // Kollar om det bara finns ett nummer kvar     
+            {
+                sudokuToHard = false;
+                string cellNumber = Convert.ToString(possible[0]);
+                sudokuNumbers = sudokuNumbers.Remove(laps, 1).Insert(laps, cellNumber); // Plockar bort ett nummer som är fel och lägger till rätt nummer
+
+                if (!sudokuNumbers.Contains("0"))   // Är sudokun full finns inga tomma platser kvar, Då löses sudokun
+                {
+                    FillBoxRowCol(sudokuNumbers);
+                    Console.Write("\nPress ENTER to solve sudoku: ");
+                    Console.ReadLine();
+                    Console.Clear();
+                    TypeBoard();    // Skriver ut det färdiga bärdet
+                    sudkouIsFull = true;
+
+                }
+
+                FillBoxRowCol(sudokuNumbers);    // Fyller Box, rad och kloumn med nya värden
+            }
+
+        }
+
+        // Metod - Gissar tal tills sudokun är full
         private void GuessNumber()
         {
-            string guesssNumbers = sudokuNumbers;
-            var guess = new Sudoku(guesssNumbers);
+            int laps = 0;
+
             for (int rowIndex = 0; rowIndex < 9; rowIndex++)
             {
                 for (int colIndex = 0; colIndex < 9; colIndex++)
                 {
                     if (bord[rowIndex, colIndex] == '0')
                     {
-                        List<char> nr = GetPossibleNumber(rowIndex, colIndex);
+
+                        // Hämtar möjliga nummer som kan sitta i cellen
+                        List<char> numberToGuess = GetPossibleNumber(rowIndex, colIndex);
+
+                        if (numberToGuess.Count == 0)
+                        {
+                            TypeBoard();
+                            Console.WriteLine();
+                            foreach (var VARIABLE in sudokuNumbers)
+                            {
+                                Console.Write(VARIABLE + " ");    
+                            }
+                            Console.ReadLine();
+                        }
+                       
+                        foreach (var number in numberToGuess)
+                        {
+                            string Add = Convert.ToString(number);
+                            string guesssNumbers = sudokuNumbers.Remove(laps, 1).Insert(laps, Add);
+                            var NewSudoku = new Sudoku(guesssNumbers);
+
+                            FillBoxRowCol(guesssNumbers);
+                            sudokuToHard = false;
+                            NewSudoku.SolveBoard();
+                            
+                        }
+                        laps++;
                     }
+                    
                 }
             }
-           // guess.SolveBoard();
-
+            
         }
 
+        // Metod - Returnerar en lista med möjliga nummer
         public List<char> GetPossibleNumber(int rowIndex, int colIndex)
         {
             List<char> NumberOneToNine = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9' };  // Används för att sätta rätt nummer på plats
@@ -207,6 +220,7 @@ namespace newSudoku
             return NumberOneToNine;
         }
 
+        // Metod - Testar tal på cell
         public List<string> PosibleNumberToFillSudoku(List<char> numbersList, int positionRow, int positionCol)
         {
             // Temporära index för Col och Row
